@@ -2,6 +2,12 @@ class PasswordResetsController < ApplicationController
   def new
   end
 
+ def edit
+ end
+
+ def update
+ end
+ 
   def create
     @user = User.find_by(email: params[:email])
      if @user.present?
