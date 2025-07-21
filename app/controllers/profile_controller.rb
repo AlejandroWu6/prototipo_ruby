@@ -10,6 +10,6 @@ class ProfileController < ApplicationController
     unless session[:user_id]
       redirect_to login_path and return
     end
-    @user = User.find(session[:user_id])
+    @user = Current.user
   end
 end

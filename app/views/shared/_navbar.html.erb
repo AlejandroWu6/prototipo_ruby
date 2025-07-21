@@ -10,22 +10,18 @@
           <%= link_to "About Me", about_path, class: "nav-link text-white" %>
         </li>
       </ul>
-      <% if controller_name == "registrations" && action_name == "new" %>
-        <div class="ms-auto">
-          <%= link_to "Login", login_path, class: "btn btn-outline-light" %>
-        </div>
-      <% else %>
-        <% if session[:user_id] %>
-          <% @user = User.find_by(id: session[:user_id]) rescue nil %>
+      <% unless (controller_name == "session" || controller_name == "registrations") %>
+        <% if Current.user %>
+          <% @user = Current.user %>
           <% if @user %>
         <span class="navbar-text text-white ms-auto">
-          Hi, <%= @user.email.split('@').first %>
+          Hi, <%= link_to @user.email.split('@').first, profile_path, class: "text-white text-decoration-none" %>
         </span>
           <% end %>
         <% else %>
           <div class="ms-auto">
-        <%= link_to "Sign Up", sign_up_path, class: "btn btn-outline-light me-2" %>
-        <%= link_to "Login", login_path, class: "btn btn-outline-light" %>
+            <%= link_to "Sign Up", sign_up_path, class: "btn btn-outline-light me-2" %>
+            <%= link_to "Login", login_path, class: "btn btn-outline-light" %>
           </div>
         <% end %>
       <% end %>

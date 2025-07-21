@@ -2,9 +2,58 @@
 <div class="card shadow mx-auto mt-5" style="max-width: 420px;">
   <div class="card-body d-flex flex-column align-items-center">
     <h2 class="card-title mb-3 text-primary">About Me</h2>
-    <p class="card-text text-center mb-4">Este proyecto es parte de mi portfolio personal.</p>
     <a href="https://www.linkedin.com/in/alejandro-wu-ortega/" target="_blank" class="mb-2">
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/640px-LinkedIn_icon.svg.png" alt="LinkedIn" style="width:120px; height:120px; border-radius:20px; transition:filter 0.2s;" onmouseover="this.style.filter='brightness(0.7)'" onmouseout="this.style.filter='none'">
     </a>
+  </div>
+</div>
+</div>
+
+<div class="container mt-5 mb-4">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="accordion" id="aboutAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingStack">
+            <button class="accordion-button bg-primary text-white fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStack" aria-expanded="true" aria-controls="collapseStack">
+              Stack utilizado
+            </button>
+          </h2>
+          <div id="collapseStack" class="accordion-collapse collapse show" aria-labelledby="headingStack" data-bs-parent="#aboutAccordion">
+            <div class="accordion-body p-0">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Ruby on Rails</b> <span class="badge bg-secondary ms-2">Fullstack &amp; Framework</span></li>
+                <li class="list-group-item"><b>MySQL</b> <span class="badge bg-secondary ms-2">Base de datos</span></li>
+                <li class="list-group-item"><b>Bootstrap 5</b> <span class="badge bg-secondary ms-2">Frontend CSS</span></li>
+                <li class="list-group-item"><b>WSL</b> <span class="badge bg-secondary ms-2">Entorno Linux en Windows</span></li>
+                <li class="list-group-item"><b>Visual Studio Code</b> <span class="badge bg-secondary ms-2">Editor</span></li>
+                <li class="list-group-item"><b>Git &amp; GitHub</b> <span class="badge bg-secondary ms-2">Control de versiones &amp; Hosting</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingConcepts">
+            <button class="accordion-button collapsed bg-success text-white fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConcepts" aria-expanded="false" aria-controls="collapseConcepts">
+              Conceptos aprendidos
+            </button>
+          </h2>
+          <div id="collapseConcepts" class="accordion-collapse collapse" aria-labelledby="headingConcepts" data-bs-parent="#aboutAccordion">
+            <div class="accordion-body p-0">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">MVC (Modelo-Vista-Controlador)</li>
+                <li class="list-group-item">Autenticación de usuarios</li>
+                <li class="list-group-item">Diseño responsivo con Bootstrap</li>
+                <li class="list-group-item">Rutas y controladores en Rails</li>
+                <li class="list-group-item">Buenas prácticas de seguridad</li>
+                <li class="list-group-item">Integración de entornos Linux en Windows con WSL</li>
+                <li class="list-group-item">Uso de terminal y comandos Unix</li>
+                <li class="list-group-item">Flujo de trabajo con Git y GitHub</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

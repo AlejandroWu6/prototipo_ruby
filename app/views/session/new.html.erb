@@ -15,8 +15,11 @@
     <div class="mb-3">
         <%= form.label :password %>
         <%= form.password_field :password, class: "form-control", placeholder: "Password" %>
+        <%= link_to "Forgot your password?", password_reset_path, class: "text-primary text-decoration-none" %>
     </div>
     <div class="mb-3">
         <%= form.submit "Log In", class: "form-control btn btn-primary" %>
     </div>
+    <span>Don't have an account?</span>
+    <%= link_to "Sign up", sign_up_path, class: "text-primary text-decoration-none mb-3 d-inline" %>
 <% end %>
