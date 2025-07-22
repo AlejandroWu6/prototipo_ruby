@@ -1,4 +1,7 @@
-<h1>Profile</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="mb-0">Profile</h1>
+  
+</div>
     <%= form_with model: @user, url: profile_path, local: true do |form| %>
       <div class="mb-3">
         <%= form.label :email, class: "form-label" %>
@@ -16,5 +19,11 @@
         <%= form.label :new_password_confirmation, class: "form-label" %>
         <%= form.password_field :new_password_confirmation, class: "form-control", placeholder: "Confirm your new password" %>
       </div>
-      <%= form.submit "Update Profile", class: "btn btn-primary" %>
+      <div class="d-flex justify-content-between">
+        <%= form.submit "Update Profile", class: "btn btn-primary" %>
+        <div class="d-flex">
+          <%= button_to "Logout", logout_path, method: :delete, class: "btn btn-outline-secondary me-2" %>
+          <%= button_to "Eliminar usuario", delete_user_path, method: :delete, data: { confirm: "¿Estás seguro de que quieres eliminar tu cuenta?" }, class: "btn btn-danger" %>
+        </div>
+      </div>
 <% end %>

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   get "profile", to: "profile#show"
   post "profile", to: "profile#update"
+  delete "profile", to: "profile#destroy", as: :delete_user
 
   get "login", to: "session#new"
   post "login", to: "session#create"
