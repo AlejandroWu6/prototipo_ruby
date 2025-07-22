@@ -1,0 +1,20 @@
+<h1> Reset your password </h1>
+
+<%= form_with model: @user, url: password_reset_edit_path(token: params[:token]) do |form| %>
+    <% if @user.errors.any? %>
+        <div class="alert alert-danger">
+            <% @user.errors.full_messages.each do |message| %>
+                <p><%= message %></p>
+            <% end %>
+        </div>
+    <% end %>
+    <div class="mb-3">
+        <%= form.label :password, class: "form-label" %>
+        <%= form.password_field :password, class: "form-control", autocomplete: "new-password", placeholder: "Enter new password" %>
+    </div>
+    <div class="mb-3">
+        <%= form.label :password_confirmation, class: "form-label" %>
+        <%= form.password_field :password_confirmation, class: "form-control", autocomplete: "new-password", placeholder: "Confirm new password" %>
+    </div>
+  <%= form.submit "Reset password", class: "btn btn-primary" %>
+<% end %>
