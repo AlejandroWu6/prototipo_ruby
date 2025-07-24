@@ -1,24 +1,27 @@
-<h1>Formulari per a factura <%= @invoice.format.upcase %></h1>
+<h1>Create Invoice in <%= @invoice.format.upcase %> Format</h1>
 
-<%= form_with model: @invoice, url: invoices_path, method: :post do |f| %>
-  <%= f.hidden_field :format %>
+<%= form_with model: @invoice, url: invoices_path do |form| %>
+  <% if @invoice.errors.any? %>
+    <div class="alert alert-danger">
+      <% @invoice.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
 
-  <div>
-    <%= f.label :client_name, "Nom del client" %>
-    <%= f.text_field :client_name %>
+  <!-- Common fields -->
+  <div class="mb-3">
+    <%= form.label :client_name %>
+    <%= form.text_field :client_name, class: "form-control" %>
   </div>
 
-  <div>
-    <%= f.label :date, "Data" %>
-    <%= f.date_field :date, value: Date.today %>
+  <div class="mb-3">
+    <%= form.label :date %>
+    <%= form.date_field :date, class: "form-control" %>
   </div>
 
-  <div>
-    <%= f.label :total, "Import total" %>
-    <%= f.number_field :total, step: 0.01 %>
-  </div>
+  <!-- Format-specific fields -->
+  <%= render "invoices/form_fields/#{@invoice.format}_fields", f: form %>
 
-  <%# Afegeix més camps segons el teu model %>
-
-  <%= f.submit "Crear factura" %>
+ 
 <% end %>

@@ -27,7 +27,8 @@ Rails.application.routes.draw do
   
   get "invoices/new", to: "invoices#new", as: :new_invoice
 
-  post "invoices/select_format", to: "invoices#select_format", as: :select_invoice_format
+  post "invoices/form", to: "invoices#select_format", as: :select_invoice_format
+  get "invoices/form", to: "invoices#new_form", as: :invoice_form
 
   post "invoices", to: "invoices#create"
 

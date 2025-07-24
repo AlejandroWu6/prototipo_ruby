@@ -7,7 +7,7 @@ class InvoicesController < ApplicationController
     # Only shows the invoice type selector
   end
 
-  # POST /invoices/select_format
+  # POST /invoices/form
   def select_format
     @format = params[:format_type]
 
@@ -15,10 +15,26 @@ class InvoicesController < ApplicationController
       redirect_to new_invoice_path, alert: "Invalid format" and return
     end
 
+    session[:selected_format] = @format 
+
     # Prepare an empty object with the necessary data for the form
     @invoice = Invoice.new(format: @format)
     render :form # custom view
   end
+
+  # GET /invoices/form
+  def new_form
+    @format = session[:selected_format]
+    @invoice = Invoice.new(format: @format)
+
+    if @format.blank?
+      redirect_to new_invoice_path, alert: "Please select a format first"
+    else
+      render :form
+    end
+  end
+
+
 
   # POST /invoices
   def create

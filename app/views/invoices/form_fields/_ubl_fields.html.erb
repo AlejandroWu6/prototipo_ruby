@@ -1,0 +1,11 @@
+<div class="mb-3">
+  <%= f.label :vat_number, "Número d'IVA" %>
+  <%= f.text_field :vat_number, class: "form-control" %>
+</div>
+
+<div class="mb-3">
+  <%= f.label :total, "Import total" %>
+  <%= f.number_field :total, class: "form-control", step: 0.01 %>
+</div>
+
+<p class="text-muted">Estàs generant una factura en format UBL (Universal Business Language).</p>

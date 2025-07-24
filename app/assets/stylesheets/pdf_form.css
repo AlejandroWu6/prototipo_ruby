@@ -1,0 +1,39 @@
+/* Para que los inputs estén alineados y no apilen demasiado en pantallas pequeñas */
+.d-flex {
+  display: flex;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+  min-width: 150px; /* para que no se encoja demasiado */
+}
+
+.flex-grow-2 {
+  flex-grow: 2;
+  min-width: 200px;
+}
+
+.invoice-detail label {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.invoice-detail input {
+  width: 100%;
+}
+
+.remove-detail {
+  white-space: nowrap;
+}

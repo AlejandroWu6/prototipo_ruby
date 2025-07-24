@@ -1,0 +1,71 @@
+<% content_for :extra_css do %>
+  <%= stylesheet_link_tag "pdf_form" %>
+<% end %>
+
+<%= form_with model: @invoice, local: true do |f| %>
+  <!-- Campos de factura -->
+  <div class="mb-3 d-flex gap-3 flex-wrap">
+    <div class="flex-grow-1">
+      <%= f.label :number, "Número de factura" %>
+      <%= f.text_field :number, class: "form-control" %>
+    </div>
+
+    <div class="flex-grow-1">
+      <%= f.label :date, "Fecha de emisión" %>
+      <%= f.date_field :date, class: "form-control" %>
+    </div>
+
+    <div class="flex-grow-1">
+      <%= f.label :due_date, "Fecha de vencimiento" %>
+      <%= f.date_field :due_date, class: "form-control" %>
+    </div>
+
+    <div class="flex-grow-1">
+      <%= f.label :total, "Import total" %>
+      <%= f.number_field :total, class: "form-control", step: 0.01 %>
+    </div>
+  </div>
+
+  <p class="text-muted">Estàs generant una factura PDF senzilla.</p>
+
+  <!-- Detalles de la factura -->
+  <h4>Detalles</h4>
+  <div id="invoice-details">
+    <%= f.fields_for :invoice_details do |detail_form| %>
+      <div class="invoice-detail d-flex gap-2 align-items-center border p-2 mb-3">
+        <div class="flex-grow-2">
+          <%= detail_form.label :description, "Descripción" %>
+          <%= detail_form.text_field :description, class: "form-control" %>
+        </div>
+
+        <div class="flex-grow-1" style="max-width: 80px;">
+          <%= detail_form.label :quantity %>
+          <%= detail_form.number_field :quantity, class: "form-control", min: 1 %>
+        </div>
+
+        <div class="flex-grow-1" style="max-width: 100px;">
+          <%= detail_form.label :unit_price %>
+          <%= detail_form.number_field :unit_price, class: "form-control", step: 0.01 %>
+        </div>
+
+        <div class="flex-grow-1" style="max-width: 100px;">
+          <%= detail_form.label :discount %>
+          <%= detail_form.number_field :discount, class: "form-control", step: 0.01 %>
+        </div>
+
+        <div class="flex-grow-1" style="max-width: 100px;">
+          <%= detail_form.label :tax_rate %>
+          <%= detail_form.number_field :tax_rate, class: "form-control", step: 0.01 %>
+        </div>
+
+        <div>
+          <%= link_to "Eliminar línea", "#", class: "remove-detail btn btn-danger mt-4" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= link_to "Añadir línea", "#", id: "add-detail", class: "btn btn-primary mb-3" %>
+
+  <%= f.submit "Guardar factura", class: "btn btn-success" %>
+<% end %>
