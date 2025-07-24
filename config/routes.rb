@@ -6,13 +6,15 @@ Rails.application.routes.draw do
   get "sign_up", to: "registrations#new"
   post "sign_up", to: "registrations#create"
 
-  get "login", to: "session#new"
-  post "login", to: "session#create"
-  delete "logout", to: "session#destroy", as: :logout
+  get "login", to: "sessions#new"
+  post "login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy", as: :logout
 
   get "profile", to: "profile#show"
-  post "profile", to: "profile#update"
+  patch "profile", to: "profile#update"         
+  post "profile", to: "profile#update"        
   delete "profile", to: "profile#destroy", as: :delete_user
+
 
   get "password/reset", to: "password_resets#new"
   post "password/reset", to: "password_resets#create"

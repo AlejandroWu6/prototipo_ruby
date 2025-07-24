@@ -22,7 +22,7 @@
       <div class="d-flex justify-content-between">
         <%= form.submit "Update Profile", class: "btn btn-primary" %>
         <div class="d-flex">
-          <%= button_to "Logout", logout_path, method: :delete, class: "btn btn-outline-secondary me-2" %>
+          <%= link_to "Logout", logout_path, data: { turbo_method: :delete, confirm: "¿Quieres cerrar sesión?" }, class: "btn btn-outline-secondary me-2" %>
           <%= button_to "Eliminar usuario", delete_user_path, method: :delete, data: { confirm: "¿Estás seguro de que quieres eliminar tu cuenta?" }, class: "btn btn-danger" %>
         </div>
       </div>
