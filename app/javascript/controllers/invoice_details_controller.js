@@ -1,51 +1,55 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const addDetailBtn = document.getElementById("add-detail");
-  const detailsDiv = document.getElementById("invoice-details");
+import { Controller } from "@hotwired/stimulus";
 
-  addDetailBtn.addEventListener("click", (e) => {
-    e.preventDefault();
+export default class extends Controller {
+  static targets = ["container"];
 
-    // Contar cuántas líneas hay
-    const count = detailsDiv.querySelectorAll(".invoice-detail").length;
+  connect() {
+    this.container = this.containerTarget;
+  }
 
-    // Crear nuevo bloque con índices para el nested form
-    const newDetailHTML = `
-      <div class="invoice-detail mb-3 border p-2">
-        <label for="invoice_invoice_details_attributes_${count}_description">Descripción</label>
-        <input class="form-control" type="text" name="invoice[invoice_details_attributes][${count}][description]" id="invoice_invoice_details_attributes_${count}_description">
+  addDetail(event) {
+    event.preventDefault();
 
-        <label for="invoice_invoice_details_attributes_${count}_quantity">Quantity</label>
-        <input class="form-control" type="number" min="1" name="invoice[invoice_details_attributes][${count}][quantity]" id="invoice_invoice_details_attributes_${count}_quantity">
+    const detailDivs = this.container.querySelectorAll(".invoice-detail");
+    if (detailDivs.length === 0) return;
 
-        <label for="invoice_invoice_details_attributes_${count}_unit_price">Unit price</label>
-        <input class="form-control" step="0.01" type="number" name="invoice[invoice_details_attributes][${count}][unit_price]" id="invoice_invoice_details_attributes_${count}_unit_price">
+    const lastDetail = detailDivs[detailDivs.length - 1];
+    const newDetail = lastDetail.cloneNode(true);
 
-        <label for="invoice_invoice_details_attributes_${count}_discount">Discount</label>
-        <input class="form-control" step="0.01" type="number" name="invoice[invoice_details_attributes][${count}][discount]" id="invoice_invoice_details_attributes_${count}_discount">
+    // Limpiar inputs para nueva línea
+    newDetail.querySelectorAll("input").forEach(input => input.value = "");
 
-        <label for="invoice_invoice_details_attributes_${count}_tax_rate">Tax rate</label>
-        <input class="form-control" step="0.01" type="number" name="invoice[invoice_details_attributes][${count}][tax_rate]" id="invoice_invoice_details_attributes_${count}_tax_rate">
+    this.container.appendChild(newDetail);
+    this.updateIndices();
+  }
 
-        <a href="#" class="remove-detail btn btn-danger mt-2">Eliminar línea</a>
-      </div>`;
+  removeDetail(event) {
+    event.preventDefault();
 
-    detailsDiv.insertAdjacentHTML('beforeend', newDetailHTML);
-  });
-
-  detailsDiv.addEventListener("click", (e) => {
-    if(e.target.classList.contains("remove-detail")){
-      e.preventDefault();
-      const detailDiv = e.target.closest(".invoice-detail");
-      if(detailDiv){
-        // Si es un detalle ya guardado, añade _destroy para eliminar
-        const destroyField = detailDiv.querySelector("input[name*='_destroy']");
-        if(destroyField){
-          destroyField.value = "1";
-          detailDiv.style.display = "none";
-        } else {
-          detailDiv.remove();
-        }
-      }
+    const detailDivs = this.container.querySelectorAll(".invoice-detail");
+    if (detailDivs.length <= 1) {
+      alert("Debe haber al menos una línea.");
+      return;
     }
-  });
-});
+
+    const detailToRemove = event.target.closest(".invoice-detail");
+    detailToRemove.remove();
+    this.updateIndices();
+  }
+
+  updateIndices() {
+    const detailDivs = this.container.querySelectorAll(".invoice-detail");
+    detailDivs.forEach((div, index) => {
+      div.querySelectorAll("input, label").forEach(el => {
+        if (el.tagName === "INPUT") {
+          if (!el.name) return;
+          el.name = el.name.replace(/\[\d+\]/, `[${index}]`);
+          if (el.id) el.id = el.id.replace(/\_\d+/, `_${index}`);
+        } else if (el.tagName === "LABEL") {
+          if (!el.htmlFor) return;
+          el.htmlFor = el.htmlFor.replace(/\_\d+/, `_${index}`);
+        }
+      });
+    });
+  }
+}
