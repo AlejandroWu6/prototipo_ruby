@@ -1,2 +1,18 @@
-<h1>Make your own Invoice</h1>
+<h1>Welcome to your invoice application</h1>
 
+<% if @invoices.present? %>
+  <h2>Your Invoices</h2>
+  <ul>
+    <% @invoices.each do |invoice| %>
+      <li>
+        <%= link_to "Invoice ##{invoice.id}", invoice_path(invoice) %>
+        - <%= number_to_currency(invoice.total) %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Create a new invoice</p>
+  <button class="btn btn-primary">
+    <%= link_to "New Invoice", new_invoice_path, style: "color: white; font-weight: bold; text-decoration: none;" %>
+  </button>
+<% end %>

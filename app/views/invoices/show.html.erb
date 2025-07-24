@@ -1,0 +1,16 @@
+<h1>Factura <%= @invoice.id %></h1>
+
+<p><strong>Client:</strong> <%= @invoice.client_name %></p>
+<p><strong>Data:</strong> <%= @invoice.date %></p>
+<p><strong>Format:</strong> <%= @invoice.format %></p>
+<p><strong>Total:</strong> <%= number_to_currency(@invoice.total) %></p>
+
+<h2>Descarregar</h2>
+<ul>
+  <li><%= link_to "PDF simple", export_invoice_path(@invoice, format_type: "pdf") %></li>
+  <li><%= link_to "UBL XML", export_invoice_path(@invoice, format_type: "ubl") %></li>
+  <li><%= link_to "Factura-e XML", export_invoice_path(@invoice, format_type: "facturae") %></li>
+  <li><%= link_to "Factur-X", export_invoice_path(@invoice, format_type: "facturx") %></li>
+</ul>
+
+<%= link_to "Tornar al historial", invoices_path %>

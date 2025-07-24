@@ -1,0 +1,11 @@
+<h1 style="text-align: center;">Select Invoice Format</h1>
+
+<%= form_with url: select_invoice_format_path, method: :post, html: { style: "display: flex; justify-content: center; align-items: center; flex-direction: column;" } do %>
+  <%= select_tag :format_type, options_for_select([
+    ["PDF", "pdf"], 
+    ["FacturX", "facturx"], 
+    ["UBL", "ubl"], 
+    ["FacturaE", "facturae"]
+  ]) %>
+  <%= submit_tag "Continue", style: "margin-top: 10px;", class: "btn btn-primary" %>
+<% end %>

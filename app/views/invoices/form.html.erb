@@ -1,0 +1,24 @@
+<h1>Formulari per a factura <%= @invoice.format.upcase %></h1>
+
+<%= form_with model: @invoice, url: invoices_path, method: :post do |f| %>
+  <%= f.hidden_field :format %>
+
+  <div>
+    <%= f.label :client_name, "Nom del client" %>
+    <%= f.text_field :client_name %>
+  </div>
+
+  <div>
+    <%= f.label :date, "Data" %>
+    <%= f.date_field :date, value: Date.today %>
+  </div>
+
+  <div>
+    <%= f.label :total, "Import total" %>
+    <%= f.number_field :total, step: 0.01 %>
+  </div>
+
+  <%# Afegeix més camps segons el teu model %>
+
+  <%= f.submit "Crear factura" %>
+<% end %>
