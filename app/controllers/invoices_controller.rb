@@ -4,7 +4,7 @@ class InvoicesController < ApplicationController
 
   # GET /invoices/new
   def new
-    # Solo muestra el selector de tipo de factura
+    # Only shows the invoice type selector
   end
 
   # POST /invoices/select_format
@@ -12,12 +12,12 @@ class InvoicesController < ApplicationController
     @format = params[:format_type]
 
     unless %w[ubl facturae facturx pdf].include?(@format)
-      redirect_to new_invoice_path, alert: "Formato inválido" and return
+      redirect_to new_invoice_path, alert: "Invalid format" and return
     end
 
-    # Aquí puedes preparar un objeto vacío con los datos necesarios para el formulario
+    # Prepare an empty object with the necessary data for the form
     @invoice = Invoice.new(format: @format)
-    render :form # vista personalizada
+    render :form # custom view
   end
 
   # POST /invoices
@@ -25,16 +25,16 @@ class InvoicesController < ApplicationController
     @invoice = current_user.invoices.build(invoice_params)
 
     if @invoice.save
-      redirect_to invoice_path(@invoice), notice: "Factura creada correctamente"
+      redirect_to invoice_path(@invoice), notice: "Invoice successfully created"
     else
-      flash.now[:alert] = "Error al crear la factura"
+      flash.now[:alert] = "Error creating the invoice"
       render :form
     end
   end
 
   # GET /invoices/:id
   def show
-    # Muestra los datos de la factura
+    # Displays the invoice data
   end
 
   # GET /invoices/:id/export/:format_type
@@ -55,7 +55,7 @@ class InvoicesController < ApplicationController
       data = InvoiceExporter.to_simple_pdf(@invoice)
       send_data data, filename: "invoice_#{@invoice.id}.pdf"
     else
-      redirect_to invoice_path(@invoice), alert: "Formato desconocido"
+      redirect_to invoice_path(@invoice), alert: "Unknown format"
     end
   end
 
@@ -63,15 +63,15 @@ class InvoicesController < ApplicationController
 
   def set_invoice
     @invoice = current_user.invoices.find_by(id: params[:id])
-    redirect_to invoices_path, alert: "Factura no encontrada" unless @invoice
+    redirect_to invoices_path, alert: "Invoice not found" unless @invoice
   end
 
   def invoice_params
     params.require(:invoice).permit(:client_name, :date, :format, :total, :other_fields_here)
-    # Agrega los campos que estás usando en el formulario
+    # Add the fields you are using in the form
   end
 
   def require_login
-    redirect_to login_path, alert: "Debes iniciar sesión" unless current_user
+    redirect_to login_path, alert: "You must be logged in" unless current_user
   end
 end
