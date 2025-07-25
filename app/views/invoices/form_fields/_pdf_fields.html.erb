@@ -2,55 +2,57 @@
   <%= stylesheet_link_tag "pdf_form" %>
 <% end %>
 
-<%= form_with model: @invoice, local: true, html: { style: "display: flex; flex-direction: column; min-height: 500px;" } do |f| %>
-  <!-- Campos de factura -->
+<%= form_with model: @invoice, local: true, html: { style: "display: flex; flex-direction: column; min-height: 500px; background-color: #f7f7f7;" } do |f| %>
+
+  <!-- From y Bill To -->
   <div class="mb-3 d-flex gap-3 flex-wrap" style="flex-grow: 1;">
     <div class="flex-grow-1">
-      <%= f.label :number, "Número de factura" %>
-      <%= f.text_field :number, class: "form-control" %>
+      <%= f.label :from, "From" %>
+      <%= f.text_area :from, class: "form-control", rows: 3, required: true %>
     </div>
 
     <div class="flex-grow-1">
-      <%= f.label :date, "Fecha de emisión" %>
-      <%= f.date_field :date, class: "form-control" %>
-    </div>
-
-    <div class="flex-grow-1">
-      <%= f.label :due_date, "Fecha de vencimiento" %>
-      <%= f.date_field :due_date, class: "form-control" %>
-    </div>
-
-    <div class="flex-grow-1">
-      <%= f.label :total, "Import total" %>
-      <%= f.number_field :total, class: "form-control", step: 0.01 %>
+      <%= f.label :bill_to, "Bill To" %>
+      <%= f.text_area :bill_to, class: "form-control", rows: 3, required: true %>
     </div>
   </div>
 
-  <p class="text-muted">Estàs generant una factura PDF senzilla.</p>
+  <!-- Campos de factura -->
+  <div class="mb-3 d-flex gap-3 flex-wrap" style="flex-grow: 1;">
+    <div class="flex-grow-1">
+      <%= f.label :number, "Invoice #" %>
+      <%= f.text_field :number, class: "form-control", required: true %>
+    </div>
 
+    <div class="flex-grow-1">
+      <%= f.label :date, "Issue Date" %>
+      <%= f.date_field :date, class: "form-control", required: true %>
+    </div>
+
+    <div class="flex-grow-1">
+      <%= f.label :due_date, "Due Date" %>
+      <%= f.date_field :due_date, class: "form-control", required: true %>
+    </div>
+  </div>
+  
   <!-- Detalles de la factura -->
-  <h4>Detalles</h4>
+  <h4>Details</h4>
   <div id="invoice-details" data-controller="invoice-details" data-invoice-details-target="container">
     <%= f.fields_for :invoice_details do |detail_form| %>
       <div class="invoice-detail d-flex gap-2 align-items-center border p-2 mb-3">
         <div class="flex-grow-2">
-          <%= detail_form.label :description, "Descripción" %>
-          <%= detail_form.text_field :description, class: "form-control" %>
+          <%= detail_form.label :description, "Description" %>
+          <%= detail_form.text_area :description, class: "form-control", rows: 1, style: "min-height: 2em; resize: vertical;", required: true %>
         </div>
 
         <div class="flex-grow-1" style="max-width: 80px;">
           <%= detail_form.label :quantity %>
-          <%= detail_form.number_field :quantity, class: "form-control", min: 1 %>
+          <%= detail_form.number_field :quantity, class: "form-control", min: 1, required: true %>
         </div>
 
         <div class="flex-grow-1" style="max-width: 100px;">
           <%= detail_form.label :unit_price %>
-          <%= detail_form.number_field :unit_price, class: "form-control", step: 0.01 %>
-        </div>
-
-        <div class="flex-grow-1" style="max-width: 100px;">
-          <%= detail_form.label :discount %>
-          <%= detail_form.number_field :discount, class: "form-control", step: 0.01 %>
+          <%= detail_form.number_field :unit_price, class: "form-control", step: 0.01, required: true %>
         </div>
 
         <div class="flex-grow-1" style="max-width: 100px;">
@@ -59,19 +61,46 @@
         </div>
 
         <div>
-          <%= link_to "Eliminar línea", "#", class: "remove-detail btn btn-danger mt-4", data: { action: "click->invoice-details#removeDetail" } %>
+          <%= link_to "Remove Item", "#", class: "remove-detail btn btn-danger mt-4", data: { action: "click->invoice-details#removeDetail" } %>
         </div>
       </div>
-       
     <% end %>
-    <button id="add-line-btn" type="button" data-action="click-&gt;invoice-details#addDetail" class="btn btn-primary mb-3">
-      Añadir línea
+
+    <button id="add-line-btn" type="button" data-action="click->invoice-details#addDetail" class="btn btn-primary mb-3">
+      Add Item
     </button>
   </div>
 
+<!-- Resumen de totales y Terms & Conditions -->
+<div class="d-flex flex-wrap justify-content-between align-items-start mt-5 gap-4">
+  <!-- Terms & Conditions -->
+  <div class="flex-grow-1" style="min-width: 300px; ">
+    <%= f.label :terms, "Terms & Conditions", class: "form-label fw-semibold" %>
+    <%= f.text_area :terms, class: "form-control shadow-sm", rows: 6, placeholder: "Enter terms and conditions. Optional." %>
+  </div>
+
+  <!-- Totales y Currency -->
+  <div id="invoice-summary" class="text-end" style="min-width: 260px; margin-top: 32px;">
+    <div class="border rounded p-3 shadow-sm bg-white">
+      <p class="mb-1 text-muted" id="invoice-subtotal">Subtotal: 0,00 €</p>
+      <p class="mb-1 text-muted" id="invoice-tax">Taxes: 0,00 €</p>
+      <h5 id="invoice-total" class="fw-bold">Total: 0,00 €</h5>
+
+      <!-- Currency Selector (auto-width ajustado al contenido) -->
+      <div class="mt-2 d-flex justify-content-end">
+        <%= f.select :currency,
+              options_for_select([["€ Euro", "EUR"], ["$ USD", "USD"], ["£ GBP", "GBP"]], @invoice.currency),
+              {},
+              class: "form-select form-select-sm w-auto" %>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 
-  <div style="margin-top: auto; align-self: flex-start;">
-    <%= f.submit "Guardar factura", class: "btn btn-success" %>
+
+  <div style="margin-top: auto; align-self: flex-start; margin-top: 20px;">
+    <%= f.submit "Save invoice", class: "btn btn-success" %>
   </div>
 <% end %>
