@@ -4,16 +4,15 @@ export default class extends Controller {
   static targets = ["container"];
 
   connect() {
-    console.log("InvoiceDetails controller connected.");
+    console.log("invoice_details_controller.js controller connected.");
     if (!this.hasContainerTarget) {
-      console.error("InvoiceDetails controller: container target not found.");
+      console.error("invoice_details_controller.js: container target not found.");
     }
   }
 
   addDetail(event) {
     if (event) event.preventDefault();
-    console.log("addDetail s'executa");  
-    alert("Afegint una nova línia de detall...");
+    console.log("addDetail s'executa");
 
     // Buscar l'última línia de detall (dins el container)
     const lastDetail = this.containerTarget.querySelector(".invoice-detail:last-of-type");
@@ -28,10 +27,18 @@ export default class extends Controller {
     newDetail.querySelectorAll("input").forEach(input => {
       input.value = "";
     });
-    
-    this.containerTarget.appendChild(newDetail);
+
+    // Buscar el botó amb id 'add-line-btn' per inserir abans d'ell
+    const addButton = this.containerTarget.querySelector("#add-line-btn");
+    if (addButton) {
+      this.containerTarget.insertBefore(newDetail, addButton);
+    } else {
+      this.containerTarget.appendChild(newDetail); // Si no es troba el botó, s'afegeix al final
+    }
+
     this.updateIndices();
   }
+
 
   removeDetail(event) {
     event.preventDefault();
