@@ -38,15 +38,40 @@ class InvoicesController < ApplicationController
 
   # POST /invoices
   def create
-    @invoice = current_user.invoices.build(invoice_params)
+    invoice_data = params[:invoice].dup
+
+    client_name = invoice_data.delete(:client_name)
+    invoice_details_data = invoice_data.delete(:invoice_details)
+
+    client = Client.find_or_create_by(name: client_name) if client_name.present?
+
+    @invoice = current_user.invoices.build(invoice_data.permit(
+      :from, :number, :date, :due_date, :terms, :currency, :format
+    ))
+    @invoice.format ||= session[:selected_format]
+    @invoice.client = client if client
 
     if @invoice.save
-      redirect_to invoice_path(@invoice), notice: "Invoice successfully created"
+      if invoice_details_data.present?
+        @invoice.invoice_details.create(
+          description: invoice_details_data[:description],
+          quantity: invoice_details_data[:quantity],
+          unit_price: invoice_details_data[:unit_price],
+          tax_rate: invoice_details_data[:tax_rate]
+        )
+      end
+
+      redirect_to root_path, notice: "Invoice successfully created"
     else
-      flash.now[:alert] = "Error creating the invoice"
+      flash.now[:alert] = "Error creating the invoice: #{@invoice.errors.full_messages.join(", ")}"
       render :form
+      puts "Error creating invoice: #{@invoice.errors.full_messages.join(", ")}"
     end
   end
+
+
+
+
 
   # GET /invoices/:id
   def show
@@ -82,10 +107,20 @@ class InvoicesController < ApplicationController
     redirect_to invoices_path, alert: "Invoice not found" unless @invoice
   end
 
-  def invoice_params
-    params.require(:invoice).permit(:client_name, :date, :format, :total, :other_fields_here)
-    # Add the fields you are using in the form
-  end
+def invoice_params
+  params.require(:invoice).permit(
+    :from,
+    :number,
+    :date,
+    :due_date,
+    :terms,
+    :currency,
+    :format
+    # ❌ No incloure :client_name ni invoice_details_attributes
+  )
+end
+
+
 
   def require_login
     redirect_to login_path, alert: "You must be logged in" unless current_user

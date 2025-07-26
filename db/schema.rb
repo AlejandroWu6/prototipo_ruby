@@ -14,8 +14,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
   create_table "clients", force: :cascade do |t|
     t.string "name"
     t.string "tax_id"
-    t.string "email"
     t.string "address"
+    t.string "zip_code"
+    t.string "city"
+    t.string "country_code"
+    t.string "email"
+    t.string "client_code"
+    t.string "contact_person"
+    t.string "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -25,7 +31,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
     t.string "description"
     t.integer "quantity"
     t.decimal "unit_price", precision: 10, scale: 2
-    t.decimal "discount", precision: 10, scale: 2
     t.decimal "tax_rate", precision: 5, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -34,21 +39,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
 
   create_table "invoices", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "title"
+    t.integer "client_id", null: false
+    t.string "from"
     t.string "number"
-    t.string "format"
-    t.string "client_name"
     t.date "date"
-    t.decimal "total", precision: 12, scale: 2
-    t.string "currency"
-    t.string "status"
-    t.text "notes"
     t.date "due_date"
+    t.string "currency", default: "EUR"
     t.string "payment_method"
-    t.string "legal_reference"
+    t.string "payment_terms"
+    t.string "status"
+    t.decimal "subtotal", precision: 12, scale: 2
+    t.decimal "tax_total", precision: 12, scale: 2
+    t.decimal "total", precision: 12, scale: 2
+    t.string "format"
     t.string "file"
+    t.string "order_reference"
+    t.string "legal_reference"
+    t.text "notes"
+    t.text "terms"
+    t.text "from_address"
+    t.text "bill_to_address"
+    t.string "logo_url"
+    t.string "signature_base64"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
@@ -60,5 +75,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
   end
 
   add_foreign_key "invoice_details", "invoices"
+  add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "users"
 end

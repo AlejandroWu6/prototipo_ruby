@@ -6,6 +6,7 @@ class MainController < ApplicationController
         reset_session  
         redirect_to login_path, alert: "Session expired. Please log in again."
       end
+          @invoices = current_user.invoices
     end
   end
 end

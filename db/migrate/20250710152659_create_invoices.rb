@@ -3,6 +3,7 @@ class CreateInvoices < ActiveRecord::Migration[8.0]
     create_table :invoices do |t|
       t.references :user, null: false, foreign_key: true
       t.references :client, null: false, foreign_key: true
+      t.string  :from                       # Emisor
 
       t.string  :number                     # Código/número de la factura
       t.date    :date                       # Fecha de emisión
