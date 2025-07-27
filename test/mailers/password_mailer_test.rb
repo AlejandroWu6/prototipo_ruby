@@ -2,10 +2,13 @@ require "test_helper"
 
 class PasswordMailerTest < ActionMailer::TestCase
   test "reset" do
-    mail = PasswordMailer.reset
-    assert_equal "Reset", mail.subject
-    assert_equal [ "to@example.org" ], mail.to
-    assert_equal [ "from@example.com" ], mail.from
-    assert_match "Hi", mail.body.encoded
+    user = users(:one)
+
+    mail = PasswordMailer.with(user: user).reset
+
+    assert_equal [user.email], mail.to
+    assert_equal "Reset", mail.subject 
+    assert_match user.email, mail.body.encoded 
+    assert_match /\/password\/reset\/edit\/[\w\-]+/, mail.body.encoded # comprobacion del token / enlace
   end
 end
