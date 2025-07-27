@@ -36,7 +36,7 @@ class InvoicesController < ApplicationController
 
   # POST /invoices
   def create
-    client_name = params[:invoice][:client_name]
+    client_name = params[:client_name] # recogido directamente, no desde invoice[:client_name]
     client = Client.find_or_create_by(name: client_name) if client_name.present?
 
     @invoice = current_user.invoices.build(invoice_params)
@@ -60,6 +60,7 @@ class InvoicesController < ApplicationController
       render :form
     end
   end
+
 
   # GET /invoices/:id
   def show

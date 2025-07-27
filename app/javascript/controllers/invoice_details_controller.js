@@ -12,33 +12,33 @@ export default class extends Controller {
     this.containerTarget.addEventListener("input", () => this.calculateTotals());
     this.calculateTotals();
   }
+addDetail(event) {
+  if (event) event.preventDefault();
+  console.log("addDetail s'executa");
 
-  addDetail(event) {
-    if (event) event.preventDefault();
-    console.log("addDetail s'executa");
-
-    const lastDetail = this.containerTarget.querySelector(".invoice-detail:last-of-type");
-    if (!lastDetail) {
-      console.error("No hi ha cap .invoice-detail per clonar.");
-      return;
-    }
-
-    const newDetail = lastDetail.cloneNode(true);
-
-    newDetail.querySelectorAll("input").forEach(input => {
-      input.value = "";
-    });
-
-    const addButton = this.containerTarget.querySelector("#add-line-btn");
-    if (addButton) {
-      this.containerTarget.insertBefore(newDetail, addButton);
-    } else {
-      this.containerTarget.appendChild(newDetail);
-    }
-
-    this.updateIndices();
-    this.calculateTotals();
+  const lastDetail = this.containerTarget.querySelector(".invoice-detail:last-of-type");
+  if (!lastDetail) {
+    console.error("No hi ha cap .invoice-detail per clonar.");
+    return;
   }
+
+  const newDetail = lastDetail.cloneNode(true);
+
+  // Limpiar inputs y textareas
+  newDetail.querySelectorAll("input, textarea").forEach(el => {
+    el.value = "";
+  });
+
+  const addButton = this.containerTarget.querySelector("#add-line-btn");
+  if (addButton) {
+    this.containerTarget.insertBefore(newDetail, addButton);
+  } else {
+    this.containerTarget.appendChild(newDetail);
+  }
+
+  this.updateIndices();
+  this.calculateTotals();
+}
 
   removeDetail(event) {
     event.preventDefault();
