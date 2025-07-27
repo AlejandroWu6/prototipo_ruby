@@ -12,33 +12,35 @@ export default class extends Controller {
     this.containerTarget.addEventListener("input", () => this.calculateTotals());
     this.calculateTotals();
   }
-addDetail(event) {
-  if (event) event.preventDefault();
-  console.log("addDetail s'executa");
 
-  const lastDetail = this.containerTarget.querySelector(".invoice-detail:last-of-type");
-  if (!lastDetail) {
-    console.error("No hi ha cap .invoice-detail per clonar.");
-    return;
+  addDetail(event) {
+    if (event) event.preventDefault();
+    console.log("addDetail s'executa");
+
+    const lastDetail = this.containerTarget.querySelector(".invoice-detail:last-of-type");
+    if (!lastDetail) {
+      console.error("No hi ha cap .invoice-detail per clonar.");
+      return;
+    }
+
+    const newDetail = lastDetail.cloneNode(true);
+
+    // Limpiar inputs y textareas
+    newDetail.querySelectorAll("input, textarea").forEach(el => {
+      el.value = "";
+    });
+
+    // Insertar antes del botón o al final
+    const addButton = this.containerTarget.querySelector("#add-line-btn");
+    if (addButton) {
+      this.containerTarget.insertBefore(newDetail, addButton);
+    } else {
+      this.containerTarget.appendChild(newDetail);
+    }
+
+    this.updateIndices();
+    this.calculateTotals();
   }
-
-  const newDetail = lastDetail.cloneNode(true);
-
-  // Limpiar inputs y textareas
-  newDetail.querySelectorAll("input, textarea").forEach(el => {
-    el.value = "";
-  });
-
-  const addButton = this.containerTarget.querySelector("#add-line-btn");
-  if (addButton) {
-    this.containerTarget.insertBefore(newDetail, addButton);
-  } else {
-    this.containerTarget.appendChild(newDetail);
-  }
-
-  this.updateIndices();
-  this.calculateTotals();
-}
 
   removeDetail(event) {
     event.preventDefault();
@@ -60,19 +62,20 @@ addDetail(event) {
 
   updateIndices() {
     const detailDivs = this.containerTarget.querySelectorAll(".invoice-detail");
+
     detailDivs.forEach((div, index) => {
-      div.querySelectorAll("input, label").forEach(el => {
-        if (el.tagName === "INPUT") {
-          if (el.name) {
-            el.name = el.name.replace(/\[\d+\]/, `[${index}]`);
-          }
-          if (el.id) {
-            el.id = el.id.replace(/\_\d+/, `_${index}`);
-          }
-        } else if (el.tagName === "LABEL") {
-          if (el.htmlFor) {
-            el.htmlFor = el.htmlFor.replace(/\_\d+/, `_${index}`);
-          }
+      div.querySelectorAll("input, textarea, label").forEach(el => {
+        // Update name
+        if (el.name) {
+          el.name = el.name.replace(/\[\d+\]/g, `[${index}]`);
+        }
+        // Update id
+        if (el.id) {
+          el.id = el.id.replace(/_\d+(_[a-z]*)?$/, `_${index}$1`);
+        }
+        // Update htmlFor in labels
+        if (el.tagName === "LABEL" && el.htmlFor) {
+          el.htmlFor = el.htmlFor.replace(/_\d+(_[a-z]*)?$/, `_${index}$1`);
         }
       });
     });
@@ -85,9 +88,9 @@ addDetail(event) {
     const detailDivs = this.containerTarget.querySelectorAll(".invoice-detail");
 
     detailDivs.forEach(div => {
-      const quantity = parseFloat(div.querySelector('input[name*="[quantity]"]').value) || 0;
-      const unitPrice = parseFloat(div.querySelector('input[name*="[unit_price]"]').value) || 0;
-      const taxRate = parseFloat(div.querySelector('input[name*="[tax_rate]"]').value) || 0;
+      const quantity = parseFloat(div.querySelector('input[name*="[quantity]"]')?.value) || 0;
+      const unitPrice = parseFloat(div.querySelector('input[name*="[unit_price]"]')?.value) || 0;
+      const taxRate = parseFloat(div.querySelector('input[name*="[tax_rate]"]')?.value) || 0;
 
       const lineTotal = quantity * unitPrice;
       const lineTax = lineTotal * (taxRate / 100);

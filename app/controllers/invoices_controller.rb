@@ -57,7 +57,7 @@ class InvoicesController < ApplicationController
       redirect_to root_path, notice: "Invoice successfully created"
     else
       flash.now[:alert] = "Error creating the invoice: #{@invoice.errors.full_messages.join(", ")}"
-      render :form
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -90,19 +90,18 @@ end
     redirect_to invoices_path, alert: "Invoice not found" unless @invoice
   end
 
-  def invoice_params
-    params.require(:invoice).permit(
-      :from,
-      :number,
-      :date,
-      :due_date,
-      :terms,
-      :currency,
-      :format,
-      invoice_details_attributes: [:description, :quantity, :unit_price, :tax_rate]
-    )
-  end
-
+ def invoice_params
+  params.require(:invoice).permit(
+    :from,
+    :number,
+    :date,
+    :due_date,
+    :terms,
+    :currency,
+    :format,
+    invoice_details_attributes: [:id, :description, :quantity, :unit_price, :tax_rate, :_destroy]
+  )
+end
   def require_login
     redirect_to login_path, alert: "You must be logged in" unless current_user
   end

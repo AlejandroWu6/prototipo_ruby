@@ -1,7 +1,7 @@
 class Invoice < ApplicationRecord
   belongs_to :user
   belongs_to :client
-  has_many :invoice_details, dependent: :destroy
+  has_many :invoice_details, inverse_of: :invoice, dependent: :destroy
   
   # Validaciones básicas
   validates :number, presence: true, uniqueness: true

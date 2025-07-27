@@ -1,13 +1,25 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  tax_id: MyString
-  email: MyString
-  address: MyString
+  name: Cliente 1 SL
+  tax_id: B12345678
+  email: cliente1@example.com
+  address: Calle Falsa 123
+  zip_code: 08001
+  city: Barcelona
+  country_code: ES
+  client_code: C001
+  contact_person: Juan Pérez
+  phone: "600123456"
 
 two:
-  name: MyString
-  tax_id: MyString
-  email: MyString
-  address: MyString
+  name: Cliente 2 SA
+  tax_id: A87654321
+  email: cliente2@example.com
+  address: Avenida Verdadera 321
+  zip_code: 28001
+  city: Madrid
+  country_code: ES
+  client_code: C002
+  contact_person: María López
+  phone: "600654321"

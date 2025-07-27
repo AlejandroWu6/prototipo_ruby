@@ -2,16 +2,21 @@
 
 one:
   invoice: one
-  description: MyString
-  quantity: 1
-  unit_price: 9.99
-  discount: 9.99
-  tax_rate: 9.99
+  description: Producto A
+  quantity: 2
+  unit_price: 50.00
+  tax_rate: 21.00
 
 two:
-  invoice: two
-  description: MyString
+  invoice: one
+  description: Producto B
   quantity: 1
-  unit_price: 9.99
-  discount: 9.99
-  tax_rate: 9.99
+  unit_price: 50.00
+  tax_rate: 21.00
+
+three:
+  invoice: two
+  description: Servicio C
+  quantity: 4
+  unit_price: 50.00
+  tax_rate: 21.00
