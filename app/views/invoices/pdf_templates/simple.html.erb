@@ -1,0 +1,30 @@
+<h1>Invoice <%= invoice.number || invoice.id %></h1>
+
+<p><strong>From:</strong> <%= invoice.from %></p>
+<p><strong>Bill To:</strong> <%= invoice.client&.name %></p>
+<p><strong>Date:</strong> <%= invoice.date.strftime("%d %b %Y") if invoice.date %></p>
+
+<table style="width: 100%; border-collapse: collapse;" border="1" cellspacing="0" cellpadding="5">
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Quantity</th>
+      <th>Unit Price</th>
+      <th>Tax Rate</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% invoice.invoice_details.each do |detail| %>
+      <tr>
+        <td><%= detail.description %></td>
+        <td><%= detail.quantity %></td>
+        <td><%= number_to_currency(detail.unit_price, unit: invoice.currency || "€") %></td>
+        <td><%= detail.tax_rate.present? ? "#{detail.tax_rate}%" : "N/A" %></td>
+        <td><%= number_to_currency(detail.quantity * detail.unit_price, unit: invoice.currency || "€") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Total: <%= number_to_currency(invoice.total, unit: invoice.currency || "€") %></h3>

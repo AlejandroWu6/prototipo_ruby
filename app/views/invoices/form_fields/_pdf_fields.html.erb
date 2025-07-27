@@ -4,27 +4,18 @@
 
 <%= form_with model: @invoice, local: true, html: { style: "display: flex; flex-direction: column; min-height: 500px; background-color: #f7f7f7;" } do |f| %>
 
-
-<%= f.hidden_field :format, value: @invoice.format %>
+  <%= f.hidden_field :format, value: @invoice.format %>
 
   <!-- From y Bill To -->
   <div class="mb-3 d-flex gap-3 flex-wrap" style="flex-grow: 1;">
     <div class="flex-grow-1">
       <%= f.label :from, "From" %>
-      <%= f.text_area :from, class: "form-control", rows: 3, required: true do %>
-John Doe Company
-123 Fake Street
-City, Country
-      <% end %>
+      <%= f.text_area :from, class: "form-control", rows: 3, required: true %>
     </div>
 
     <div class="flex-grow-1">
       <%= f.label :client_name, "Bill To" %>
-      <%= f.text_area :client_name, class: "form-control", rows: 3, required: true do %>
-Acme Corporation
-456 Real Avenue
-Other City, Other Country
-      <% end %>
+      <%= f.text_area :client_name, class: "form-control", rows: 3, required: true %>
     </div>
   </div>
 
@@ -32,17 +23,17 @@ Other City, Other Country
   <div class="mb-3 d-flex gap-3 flex-wrap" style="flex-grow: 1;">
     <div class="flex-grow-1">
       <%= f.label :number, "Invoice #" %>
-      <%= f.text_field :number, class: "form-control", required: true, value: "INV-2025-001" %>
+      <%= f.text_field :number, class: "form-control", required: true %>
     </div>
 
     <div class="flex-grow-1">
       <%= f.label :date, "Issue Date" %>
-      <%= f.date_field :date, class: "form-control", required: true, value: Date.today.strftime("%Y-%m-%d") %>
+      <%= f.date_field :date, class: "form-control", required: true %>
     </div>
 
     <div class="flex-grow-1">
       <%= f.label :due_date, "Due Date" %>
-      <%= f.date_field :due_date, class: "form-control", required: true, value: (Date.today + 30).strftime("%Y-%m-%d") %>
+      <%= f.date_field :due_date, class: "form-control", required: true %>
     </div>
   </div>
   
@@ -50,7 +41,7 @@ Other City, Other Country
   <h4>Details</h4>
   <div id="invoice-details" data-controller="invoice-details" data-invoice-details-target="container">
     <% if @invoice.invoice_details.empty? %>
-      <% @invoice.invoice_details.build(description: "Product A", quantity: 1, unit_price: 100.0, tax_rate: 21.0) %>
+      <% @invoice.invoice_details.build %>
     <% end %>
 
     <%= f.fields_for :invoice_details do |detail_form| %>
@@ -91,9 +82,7 @@ Other City, Other Country
     <!-- Terms & Conditions -->
     <div class="flex-grow-1" style="min-width: 300px;">
       <%= f.label :terms, "Terms & Conditions", class: "form-label fw-semibold" %>
-      <%= f.text_area :terms, class: "form-control shadow-sm", rows: 6, placeholder: "Enter terms and conditions. Optional." do %>
-Payment within 30 days.
-      <% end %>
+      <%= f.text_area :terms, class: "form-control shadow-sm", rows: 6, placeholder: "Enter terms and conditions. Optional." %>
     </div>
 
     <!-- Totales y Currency -->

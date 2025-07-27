@@ -17,6 +17,10 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# PDF rendering with Rails [https://github.com/mileszs/wicked_pdf]
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

@@ -34,44 +34,32 @@ class InvoicesController < ApplicationController
     end
   end
 
-
-
   # POST /invoices
   def create
-    invoice_data = params[:invoice].dup
-
-    client_name = invoice_data.delete(:client_name)
-    invoice_details_data = invoice_data.delete(:invoice_details)
-
+    client_name = params[:invoice][:client_name]
     client = Client.find_or_create_by(name: client_name) if client_name.present?
 
-    @invoice = current_user.invoices.build(invoice_data.permit(
-      :from, :number, :date, :due_date, :terms, :currency, :format
-    ))
-    @invoice.format ||= session[:selected_format]
+    @invoice = current_user.invoices.build(invoice_params)
     @invoice.client = client if client
+    @invoice.status = "pending"
+    @invoice.format ||= session[:selected_format]
+
+    # Calcular total sumando los detalles
+    total = 0
+    if @invoice.invoice_details.present?
+      total = @invoice.invoice_details.sum do |detail|
+        detail.quantity.to_f * detail.unit_price.to_f
+      end
+    end
+    @invoice.total = total
 
     if @invoice.save
-      if invoice_details_data.present?
-        @invoice.invoice_details.create(
-          description: invoice_details_data[:description],
-          quantity: invoice_details_data[:quantity],
-          unit_price: invoice_details_data[:unit_price],
-          tax_rate: invoice_details_data[:tax_rate]
-        )
-      end
-
       redirect_to root_path, notice: "Invoice successfully created"
     else
       flash.now[:alert] = "Error creating the invoice: #{@invoice.errors.full_messages.join(", ")}"
       render :form
-      puts "Error creating invoice: #{@invoice.errors.full_messages.join(", ")}"
     end
   end
-
-
-
-
 
   # GET /invoices/:id
   def show
@@ -79,26 +67,20 @@ class InvoicesController < ApplicationController
   end
 
   # GET /invoices/:id/export/:format_type
-  def export
-    format = params[:format_type]
+ def export
+  format = params[:format_type]
 
-    case format
-    when "ubl"
-      data = InvoiceExporter.to_ubl(@invoice)
-      send_data data, filename: "invoice_#{@invoice.id}.xml"
-    when "facturae"
-      data = InvoiceExporter.to_facturae(@invoice)
-      send_data data, filename: "facturae_#{@invoice.id}.xml"
-    when "facturx"
-      data = InvoiceExporter.to_facturx(@invoice)
-      send_data data, filename: "facturx_#{@invoice.id}.pdf"
-    when "pdf"
-      data = InvoiceExporter.to_simple_pdf(@invoice)
-      send_data data, filename: "invoice_#{@invoice.id}.pdf"
-    else
-      redirect_to invoice_path(@invoice), alert: "Unknown format"
-    end
+  if format == "pdf"
+    pdf_data = InvoiceExporter.to_simple_pdf(@invoice)
+    send_data pdf_data,
+              filename: "invoice_#{@invoice.id}.pdf",
+              type: "application/pdf",
+              disposition: "attachment" # descarga directa
+  else
+    redirect_to invoice_path(@invoice), alert: "Formato desconocido"
   end
+end
+
 
   private
 
@@ -107,20 +89,18 @@ class InvoicesController < ApplicationController
     redirect_to invoices_path, alert: "Invoice not found" unless @invoice
   end
 
-def invoice_params
-  params.require(:invoice).permit(
-    :from,
-    :number,
-    :date,
-    :due_date,
-    :terms,
-    :currency,
-    :format
-    # ❌ No incloure :client_name ni invoice_details_attributes
-  )
-end
-
-
+  def invoice_params
+    params.require(:invoice).permit(
+      :from,
+      :number,
+      :date,
+      :due_date,
+      :terms,
+      :currency,
+      :format,
+      invoice_details_attributes: [:description, :quantity, :unit_price, :tax_rate]
+    )
+  end
 
   def require_login
     redirect_to login_path, alert: "You must be logged in" unless current_user
