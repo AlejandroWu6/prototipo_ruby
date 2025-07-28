@@ -1,0 +1,53 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# test/fixtures/invoices.yml
+
+one:
+  user: one
+  client: one
+  from: Empresa 1 SL
+  number: INV-001
+  date: 2024-01-01
+  due_date: 2024-01-31
+  currency: EUR
+  payment_method: transferencia
+  payment_terms: 30 días
+  status: emitida
+  subtotal: 100.00
+  tax_total: 21.00
+  total: 121.00
+  format: pdf
+  file: factura_001.pdf
+  order_reference: ORD-001
+  legal_reference: CONTR-001
+  notes: Gracias por su compra
+  terms: Pago en 30 días
+  from_address: Dirección empresa emisora
+  bill_to_address: Dirección cliente
+  logo_url: /images/logo.png
+  signature_base64: ABC123==
+
+two:
+  user: two
+  client: two
+  from: Empresa 2 SA
+  number: INV-002
+  date: 2024-02-01
+  due_date: 2024-02-28
+  currency: EUR
+  payment_method: tarjeta
+  payment_terms: 15 días
+  status: pagada
+  subtotal: 200.00
+  tax_total: 42.00
+  total: 242.00
+  format: pdf
+  file: factura_002.pdf
+  order_reference: ORD-002
+  legal_reference: CONTR-002
+  notes: Servicio prestado correctamente
+  terms: Pago inmediato
+  from_address: Dirección empresa emisora 2
+  bill_to_address: Dirección cliente 2
+  logo_url: /images/logo2.png
+  signature_base64: DEF456==
