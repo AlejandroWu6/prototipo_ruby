@@ -17,7 +17,7 @@ class CreateInvoices < ActiveRecord::Migration[8.0]
       t.decimal :tax_total, precision: 12, scale: 2
       t.decimal :total, precision: 12, scale: 2
 
-      t.string  :format                     # pdf, facturae, ubl, etc.
+      t.string  :format, null: false                    # pdf, facturae, ubl, etc.
       t.string  :file                       # nombre de archivo generado
 
       t.string  :order_reference            # Pedido o referencia externa
@@ -30,6 +30,8 @@ class CreateInvoices < ActiveRecord::Migration[8.0]
 
       t.string  :logo_url                   # Ruta o referencia a logo (si se usa)
       t.string  :signature_base64           # Firma opcional (como base64 o referencia)
+
+      t.text    :xml               # Contenido XML Facturae 3.2
 
       t.timestamps
     end
