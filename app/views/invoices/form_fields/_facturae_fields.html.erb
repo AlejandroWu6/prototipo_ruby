@@ -34,32 +34,31 @@
     </div>
     <div style="flex: 1 1 30%;">
       <%= f.label :issuer_tax_id_number, "Tax Identification Number" %>
-      <%= f.text_field :issuer_tax_id_number, class: "form-control", value: "ESB63276174", required: true %>
+      <%= f.text_field :issuer_tax_id_number, class: "form-control", value: "ESA12345678", required: true %>
     </div>
     <div style="flex: 1 1 100%;">
       <%= f.label :issuer_corporate_name, "Corporate Name" %>
-      <%= f.text_field :issuer_corporate_name, class: "form-control", value: "B2Brouter Global, S.L.", required: true %>
+      <%= f.text_field :issuer_corporate_name, class: "form-control", value: "Tech Solutions S.L.", required: true %>
     </div>
   </div>
 
-  <!-- Dirección del emisor -->
   <h4>Issuer Address</h4>
   <div class="d-flex gap-3 flex-wrap">
     <div style="flex: 1 1 40%;">
       <%= f.label :issuer_address, "Address" %>
-      <%= f.text_field :issuer_address, class: "form-control", value: "Diagonal 433, 1", required: true %>
+      <%= f.text_field :issuer_address, class: "form-control", value: "Calle Mayor 10", required: true %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :issuer_post_code, "Post Code" %>
-      <%= f.text_field :issuer_post_code, class: "form-control", value: "08036", required: true %>
+      <%= f.text_field :issuer_post_code, class: "form-control", value: "28013", required: true %>
     </div>
     <div style="flex: 1 1 20%;">
       <%= f.label :issuer_town, "Town" %>
-      <%= f.text_field :issuer_town, class: "form-control", value: "Barcelona", required: true %>
+      <%= f.text_field :issuer_town, class: "form-control", value: "Madrid", required: true %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :issuer_province, "Province" %>
-      <%= f.text_field :issuer_province, class: "form-control", value: "Barcelona", required: true %>
+      <%= f.text_field :issuer_province, class: "form-control", value: "Madrid", required: true %>
     </div>
     <div style="flex: 1 1 10%;">
       <%= f.label :issuer_country_code, "Country Code" %>
@@ -72,7 +71,7 @@
   <div class="d-flex gap-3 flex-wrap">
     <div style="flex: 1 1 50%;">
       <%= f.label :batch_identifier, "Batch Identifier" %>
-      <%= f.text_field :batch_identifier, class: "form-control", value: "ESY3748537B25-102017", required: true %>
+      <%= f.text_field :batch_identifier, class: "form-control", value: "INV-2025-001", required: true %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :invoices_count, "Invoices Count" %>
@@ -80,7 +79,7 @@
     </div>
     <div style="flex: 1 1 20%;">
       <%= f.label :total_invoices_amount, "Total Invoices Amount" %>
-      <%= f.number_field :total_invoices_amount, class: "form-control", step: 0.01, value: 1.21, required: true %>
+      <%= f.number_field :total_invoices_amount, class: "form-control", step: 0.01, value: 121.00, required: true %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :invoice_currency_code, "Invoice Currency Code" %>
@@ -88,7 +87,7 @@
     </div>
   </div>
 
-  <!-- PARTIES: SELLER (Vendedor) -->
+  <!-- SELLER -->
   <h3>Seller Party</h3>
   <div class="d-flex gap-3 flex-wrap">
     <div style="flex: 1 1 15%;">
@@ -101,24 +100,23 @@
     </div>
     <div style="flex: 1 1 20%;">
       <%= f.label :seller_tax_id_number, "Tax Identification Number" %>
-      <%= f.text_field :seller_tax_id_number, class: "form-control", value: "ESY3748537B", required: true %>
+      <%= f.text_field :seller_tax_id_number, class: "form-control", value: "ESB1234567", required: true %>
     </div>
     <div style="flex: 1 1 25%;">
       <%= f.label :seller_name, "Name" %>
-      <%= f.text_field :seller_name, class: "form-control", value: "ab", required: true %>
+      <%= f.text_field :seller_name, class: "form-control", value: "Juan", required: true %>
     </div>
     <div style="flex: 1 1 20%;">
       <%= f.label :seller_first_surname, "First Surname" %>
-      <%= f.text_field :seller_first_surname, class: "form-control", value: ".", required: true %>
+      <%= f.text_field :seller_first_surname, class: "form-control", value: "Pérez", required: true %>
     </div>
   </div>
 
-  <!-- Dirección vendedor -->
   <h4>Seller Address</h4>
   <div class="d-flex gap-3 flex-wrap">
     <div style="flex: 1 1 35%;">
       <%= f.label :seller_address, "Address" %>
-      <%= f.text_field :seller_address, class: "form-control", value: "ab", required: true %>
+      <%= f.text_field :seller_address, class: "form-control", value: "Carrer de la Pau, 45", required: true %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :seller_post_code, "Post Code" %>
@@ -126,11 +124,11 @@
     </div>
     <div style="flex: 1 1 20%;">
       <%= f.label :seller_town, "Town" %>
-      <%= f.text_field :seller_town, class: "form-control", value: "ab", required: true %>
+      <%= f.text_field :seller_town, class: "form-control", value: "Sabadell", required: true %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :seller_province, "Province" %>
-      <%= f.text_field :seller_province, class: "form-control", value: "ab", required: true %>
+      <%= f.text_field :seller_province, class: "form-control", value: "Barcelona", required: true %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :seller_country_code, "Country Code" %>
@@ -141,11 +139,11 @@
   <div class="d-flex gap-3" style="flex-wrap: wrap;">
     <div style="flex: 1 1 50%;">
       <%= f.label :seller_email, "Email" %>
-      <%= f.email_field :seller_email, class: "form-control", value: "ab@gmail.com", required: true %>
+      <%= f.email_field :seller_email, class: "form-control", value: "juan.perez@example.com", required: true %>
     </div>
   </div>
 
-  <!-- PARTIES: BUYER (Comprador) -->
+  <!-- BUYER -->
   <h3>Buyer Party</h3>
   <div class="d-flex gap-3 flex-wrap">
     <div style="flex: 1 1 15%;">
@@ -158,96 +156,111 @@
     </div>
     <div style="flex: 1 1 25%;">
       <%= f.label :buyer_tax_id_number, "Tax Identification Number" %>
-      <%= f.text_field :buyer_tax_id_number, class: "form-control" %>
+      <%= f.text_field :buyer_tax_id_number, class: "form-control", value: "ESZ9876543" %>
     </div>
     <div style="flex: 1 1 40%;">
       <%= f.label :buyer_corporate_name, "Corporate Name" %>
-      <%= f.text_field :buyer_corporate_name, class: "form-control" %>
+      <%= f.text_field :buyer_corporate_name, class: "form-control", value: "Empresa Compradora SA" %>
     </div>
   </div>
 
-  <!-- Dirección comprador -->
   <h4>Buyer Address</h4>
   <div class="d-flex gap-3 flex-wrap">
     <div style="flex: 1 1 35%;">
       <%= f.label :buyer_address, "Address" %>
-      <%= f.text_field :buyer_address, class: "form-control" %>
+      <%= f.text_field :buyer_address, class: "form-control", value: "Av. Constitución 100" %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :buyer_post_code, "Post Code" %>
-      <%= f.text_field :buyer_post_code, class: "form-control" %>
+      <%= f.text_field :buyer_post_code, class: "form-control", value: "46001" %>
     </div>
     <div style="flex: 1 1 20%;">
       <%= f.label :buyer_town, "Town" %>
-      <%= f.text_field :buyer_town, class: "form-control" %>
+      <%= f.text_field :buyer_town, class: "form-control", value: "Valencia" %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :buyer_province, "Province" %>
-      <%= f.text_field :buyer_province, class: "form-control" %>
+      <%= f.text_field :buyer_province, class: "form-control", value: "Valencia" %>
     </div>
     <div style="flex: 1 1 15%;">
       <%= f.label :buyer_country_code, "Country Code" %>
-      <%= f.text_field :buyer_country_code, class: "form-control" %>
+      <%= f.text_field :buyer_country_code, class: "form-control", value: "ESP" %>
     </div>
   </div>
 
-  <!-- Detalles de la factura (invoice lines) -->
+  <!-- INVOICE LINES -->
   <h3>Invoice Lines</h3>
-  <div class="d-flex flex-column gap-2">
-    <%= f.fields_for :invoice_lines do |line| %>
-      <div class="d-flex gap-3 flex-wrap" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
-        <div style="flex: 1 1 30%;">
-          <%= line.label :product_code, "Product Code" %>
-          <%= line.text_field :product_code, class: "form-control" %>
+  <div id="invoice-details" data-controller="invoice-details" data-invoice-details-target="container">
+    <% if @invoice.invoice_details.empty? %>
+      <% @invoice.invoice_details.build %>
+    <% end %>
+
+    <%= f.fields_for :invoice_details do |detail_form| %>
+      <div class="invoice-detail d-flex gap-2 align-items-center border p-2 mb-3">
+          <div class="flex-grow-2">
+          <%= detail_form.label :product_code, "Product Code" %>
+          <%= detail_form.text_area :product_code, class: "form-control", rows: 1, style: "min-height: 2em; resize: vertical;", required: true %>
         </div>
-        <div style="flex: 1 1 40%;">
-          <%= line.label :description, "Description" %>
-          <%= line.text_field :description, class: "form-control" %>
+        
+        <div class="flex-grow-2">
+          <%= detail_form.label :description, "Description" %>
+          <%= detail_form.text_area :description, class: "form-control", rows: 1, style: "min-height: 2em; resize: vertical;", required: true %>
         </div>
-        <div style="flex: 1 1 15%;">
-          <%= line.label :quantity, "Quantity" %>
-          <%= line.number_field :quantity, class: "form-control", step: 0.01 %>
+
+        <div class="flex-grow-1" style="max-width: 80px;">
+          <%= detail_form.label :quantity %>
+          <%= detail_form.number_field :quantity, class: "form-control", min: 1, required: true %>
         </div>
-        <div style="flex: 1 1 15%;">
-          <%= line.label :unit_price, "Unit Price" %>
-          <%= line.number_field :unit_price, class: "form-control", step: 0.01 %>
+
+        <div class="flex-grow-1" style="max-width: 100px;">
+          <%= detail_form.label :unit_price %>
+          <%= detail_form.number_field :unit_price, class: "form-control", step: 0.01, required: true %>
+        </div>
+
+        <div class="flex-grow-1" style="max-width: 100px;">
+          <%= detail_form.label :tax_rate %>
+          <%= detail_form.number_field :tax_rate, class: "form-control", step: 0.01 %>
+        </div>
+
+        <div>
+          <%= link_to "Remove Item", "#", class: "remove-detail btn btn-danger mt-4", data: { action: "click->invoice-details#removeDetail" } %>
         </div>
       </div>
     <% end %>
+
+    <button id="add-line-btn" type="button" data-action="click->invoice-details#addDetail" class="btn btn-primary mb-3">
+      Add Item
+    </button>
   </div>
 
-  <!-- Impuestos -->
-  <h3>Taxes</h3>
-  <div class="d-flex gap-3 flex-wrap">
-    <div style="flex: 1 1 20%;">
-      <%= f.label :tax_rate, "Tax Rate (%)" %>
-      <%= f.number_field :tax_rate, class: "form-control", step: 0.01, value: 21 %>
+  <!-- Resumen de totales y Terms & Conditions -->
+  <div class="d-flex flex-wrap justify-content-between align-items-start mt-5 gap-4">
+    <!-- Terms & Conditions -->
+    <div class="flex-grow-1" style="min-width: 300px;">
+      <%= f.label :terms, "Terms & Conditions", class: "form-label fw-semibold" %>
+      <%= f.text_area :terms, class: "form-control shadow-sm", rows: 6, placeholder: "Enter terms and conditions. Optional." %>
     </div>
-    <div style="flex: 1 1 20%;">
-      <%= f.label :tax_amount, "Tax Amount" %>
-      <%= f.number_field :tax_amount, class: "form-control", step: 0.01 %>
+
+    <!-- Totales y Currency -->
+    <div id="invoice-summary" class="text-end" style="min-width: 260px; margin-top: 32px;">
+      <div class="border rounded p-3 shadow-sm bg-white">
+        <p class="mb-1 text-muted" id="invoice-subtotal">Subtotal: 0,00 €</p>
+        <p class="mb-1 text-muted" id="invoice-tax">Taxes: 0,00 €</p>
+        <h5 id="invoice-total" class="fw-bold">Total: 0,00 €</h5>
+
+        <!-- Currency Selector -->
+        <div class="mt-2 d-flex justify-content-end">
+          <%= f.select :currency,
+                options_for_select([["€ Euro", "EUR"], ["$ USD", "USD"], ["£ GBP", "GBP"]], @invoice.currency || "EUR"),
+                {},
+                class: "form-select form-select-sm w-auto" %>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Totales -->
-  <h3>Totals</h3>
-  <div class="d-flex gap-3 flex-wrap">
-    <div style="flex: 1 1 30%;">
-      <%= f.label :total_before_tax, "Total Before Tax" %>
-      <%= f.number_field :total_before_tax, class: "form-control", step: 0.01 %>
-    </div>
-    <div style="flex: 1 1 30%;">
-      <%= f.label :total_tax, "Total Tax" %>
-      <%= f.number_field :total_tax, class: "form-control", step: 0.01 %>
-    </div>
-    <div style="flex: 1 1 30%;">
-      <%= f.label :total_after_tax, "Total After Tax" %>
-      <%= f.number_field :total_after_tax, class: "form-control", step: 0.01 %>
-    </div>
-  </div>
-
-  <div class="mt-3">
-    <%= f.submit "Generar Factura", class: "btn btn-primary" %>
+  <div style="margin-top: auto; align-self: flex-start; margin-top: 20px;">
+    <%= f.submit "Save invoice", class: "btn btn-success" %>
   </div>
 
 <% end %>

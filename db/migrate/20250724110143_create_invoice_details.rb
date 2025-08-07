@@ -2,6 +2,7 @@ class CreateInvoiceDetails < ActiveRecord::Migration[8.0]
   def change
     create_table :invoice_details do |t|
       t.references :invoice, null: false, foreign_key: true
+      t.string :product_code, null: true
       t.string :description
       t.integer :quantity
       t.decimal :unit_price, precision: 10, scale: 2

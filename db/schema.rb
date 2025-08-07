@@ -28,6 +28,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
 
   create_table "invoice_details", force: :cascade do |t|
     t.integer "invoice_id", null: false
+    t.string "product_code"
     t.string "description"
     t.integer "quantity"
     t.decimal "unit_price", precision: 10, scale: 2
@@ -51,7 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
     t.decimal "subtotal", precision: 12, scale: 2
     t.decimal "tax_total", precision: 12, scale: 2
     t.decimal "total", precision: 12, scale: 2
-    t.string "format"
+    t.string "format", null: false
     t.string "file"
     t.string "order_reference"
     t.string "legal_reference"
@@ -61,6 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
     t.text "bill_to_address"
     t.string "logo_url"
     t.string "signature_base64"
+    t.text "xml"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id"], name: "index_invoices_on_client_id"
