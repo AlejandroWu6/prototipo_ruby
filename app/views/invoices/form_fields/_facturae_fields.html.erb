@@ -81,10 +81,15 @@
       <%= f.label :total_invoices_amount, "Total Invoices Amount" %>
       <%= f.number_field :total_invoices_amount, class: "form-control", step: 0.01, value: 121.00, required: true %>
     </div>
-    <div style="flex: 1 1 15%;">
-      <%= f.label :invoice_currency_code, "Invoice Currency Code" %>
-      <%= f.text_field :invoice_currency_code, class: "form-control", value: "EUR", required: true %>
+    <div style="flex: 1 1 20%;">
+      <%= f.label :issue_date, "Issue Date" %>
+      <%= f.date_field :issue_date, class: "form-control", value: Date.today, required: true %>
     </div>
+    <div style="flex: 1 1 20%;">
+      <%= f.label :due_date, "Due Date" %>
+      <%= f.date_field :due_date, class: "form-control", value: Date.today + 30, required: true %>
+    </div>
+
   </div>
 
   <!-- SELLER -->
@@ -250,6 +255,7 @@
 
         <!-- Currency Selector -->
         <div class="mt-2 d-flex justify-content-end">
+          <!-- Currency code -->
           <%= f.select :currency,
                 options_for_select([["€ Euro", "EUR"], ["$ USD", "USD"], ["£ GBP", "GBP"]], @invoice.currency || "EUR"),
                 {},
