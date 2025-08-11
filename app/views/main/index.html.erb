@@ -10,14 +10,14 @@
 
         <h2 class="mb-3">Your Invoices</h2>
         <ul class="list-group list-group-flush text-start">
-          <% @invoices.order(date: :desc).each do |invoice| %>
+          <% @invoices.order(created_at: :desc).each do |invoice| %>
             <li class="list-group-item mb-3" style="background: #fafafa; border: 1px solid #ddd; border-radius: 5px;">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <div>
                   <%= link_to "Invoice ##{invoice.number || invoice.id}", invoice_path(invoice), style: "text-decoration: none; color: inherit; font-weight: 600; font-size: 1.1rem;" %>
                   <br />
                   <small class="text-muted">
-                    Issued on: <%= invoice.date.strftime("%B %d, %Y") if invoice.date %> |
+                    Issued on: <%= invoice.issue_date.strftime("%B %d, %Y") if invoice.issue_date %> |
                     Due: <%= invoice.due_date.strftime("%B %d, %Y") if invoice.due_date %>
                   </small>
                 </div>

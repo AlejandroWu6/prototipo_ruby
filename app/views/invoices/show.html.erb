@@ -1,7 +1,7 @@
 <h1>Factura <%= @invoice.id %></h1>
 
 <p><strong>Client:</strong> <%= @invoice.client_name %></p>
-<p><strong>Data:</strong> <%= @invoice.date %></p>
+<p><strong>Data:</strong> <%= @invoice.issue_date %></p>
 <p><strong>Format:</strong> <%= @invoice.format %></p>
 <p><strong>Total:</strong> <%= number_to_currency(@invoice.total) %></p>
 

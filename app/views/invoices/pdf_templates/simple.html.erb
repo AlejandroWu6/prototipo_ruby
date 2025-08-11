@@ -6,7 +6,7 @@
       <div>
         <h1 style="margin: 0; color: #0072BC;">Factura</h1>
         <p style="margin: 0;">Número: <strong><%= invoice.number || invoice.id %></strong></p>
-        <p style="margin: 0;">Fecha de emisión: <strong><%= invoice.date&.strftime("%d/%m/%Y") %></strong></p>
+        <p style="margin: 0;">Fecha de emisión: <strong><%= invoice.issue_date&.strftime("%d/%m/%Y") %></strong></p>
         <p style="margin: 0;">Fecha de vencimiento: <strong><%= invoice.due_date&.strftime("%d/%m/%Y") %></strong></p>
       </div>
       <div style="text-align: right;">

@@ -5,7 +5,9 @@ class Invoice < ApplicationRecord
   
   # Validaciones básicas
   validates :number, presence: true, uniqueness: true
-  validates :date, presence: true
+  validates :issue_date, presence: true
+  validates :due_date, presence: true
+  validates :created_at, presence: true
   validates :total, numericality: { greater_than_or_equal_to: 0 }
   validates :status, inclusion: { in: %w[pending paid cancelled] }
   validates :format, inclusion: { in: %w[ubl facturae facturx pdf] }

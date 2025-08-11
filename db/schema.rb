@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_110143) do
     t.integer "client_id", null: false
     t.string "from"
     t.string "number"
-    t.date "date"
+    t.date "issue_date"
     t.date "due_date"
     t.string "currency", default: "EUR"
     t.string "payment_method"

@@ -6,7 +6,7 @@ class CreateInvoices < ActiveRecord::Migration[8.0]
       t.string  :from                       # Emisor
 
       t.string  :number                     # Código/número de la factura
-      t.date    :date                       # Fecha de emisión
+      t.date    :issue_date                 # Fecha de emisión
       t.date    :due_date                   # Fecha de vencimiento
       t.string  :currency, default: "EUR"   # EUR, USD...
       t.string  :payment_method             # transferencia, tarjeta...
