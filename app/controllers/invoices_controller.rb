@@ -42,10 +42,8 @@
 
       if format_type == "pdf"
         client_name = params[:client_name] 
-        puts "client_nameaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: #{client_name.inspect}"
-        Rails.logger.debug "buyer_corporate_nameaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: #{params[:buyer_corporate_name].inspect}"
+       
         client = Client.find_or_create_by(name: client_name) if client_name.present?
-        Rails.logger.debug "Client objectaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: #{client.inspect}, persisted? #{client&.persisted?}"
 
 
         @invoice = current_user.invoices.build(invoice_params)
@@ -79,49 +77,120 @@
         end
 
       elsif format_type == "facturae"
-          client_name = params[:buyer_corporate_name]
-          client = Client.find_or_create_by(name: client_name) if client_name.present?
+        # === EXTRA DATA ===
+        extra_data = params.require(:invoice).to_unsafe_h.slice(
+          "schema_version", "modality", "invoice_issuer_type", "issuer_person_type_code",
+          "issuer_residence_type_code", "issuer_tax_id_number", "issuer_corporate_name",
+          "issuer_address", "issuer_post_code", "issuer_town", "issuer_province",
+          "issuer_country_code", "batch_identifier", "invoices_count",
+          "total_invoices_amount", "issue_date", "due_date", "seller_person_type_code",
+          "seller_residence_type_code", "seller_tax_id_number", "seller_name",
+          "seller_first_surname", "seller_address", "seller_post_code", "seller_town",
+          "seller_province", "seller_country_code", "seller_email", "buyer_person_type_code",
+          "buyer_residence_type_code", "buyer_tax_id_number", "buyer_corporate_name",
+          "buyer_address", "buyer_post_code", "buyer_town", "buyer_province", "buyer_country_code",
+          "buyer_email", "currency", "terms"
+        )
 
-           extra_data = params[:invoice].slice(
-            "schema_version", "modality", "invoice_issuer_type", "issuer_person_type_code",
-            "issuer_residence_type_code", "issuer_tax_id_number", "issuer_corporate_name",
-            "issuer_address", "issuer_post_code", "issuer_town", "issuer_province", "issuer_country_code",
-            "batch_identifier", "invoices_count", "total_invoices_amount",
-            "seller_person_type_code", "seller_residence_type_code", "seller_tax_id_number",
-            "seller_name", "seller_first_surname", "seller_address", "seller_post_code",
-            "seller_town", "seller_province", "seller_country_code", "seller_email",
-            "buyer_person_type_code", "buyer_residence_type_code", "buyer_tax_id_number",
-            "buyer_corporate_name", "buyer_address", "buyer_post_code", "buyer_town",
-            "buyer_province", "buyer_country_code", "currency", "terms"
-          )
-          @invoice = current_user.invoices.build(invoice_params)
-          @invoice.client = client if client
-          @invoice.status = "pending"
-          @invoice.format = "facturae"
-          @invoice.created_at = Time.current
-          @invoice.number = params[:invoice][:batch_identifier] if params[:invoice][:batch_identifier].present?
-        
-          # Calcular totales
-          total = 0
-          if @invoice.invoice_details.present?
-            total = @invoice.invoice_details.sum do |detail|
-              detail.quantity.to_f * detail.unit_price.to_f * (1 + (detail.tax_rate.to_f / 100))
-            rescue
-              0
-            end
+        # === DEBUG PARAMS FACTURAE ===
+        puts "========== DEBUG FACTURAE =========="
+        puts "params.inspect:"
+        pp params.to_unsafe_h
+
+        puts "-----------------------------------"
+        puts "Nivel 1 (params directos):"
+        puts "  format_type: #{params[:format_type].inspect}"
+        puts "  commit: #{params[:commit].inspect}"
+
+        puts "-----------------------------------"
+        puts "Nivel 2 (params[:invoice]):"
+        if params[:invoice].present?
+          params[:invoice].each do |k, v|
+            puts "  #{k}: #{v.inspect}"
           end
-          @invoice.total = total
+        else
+          puts "  params[:invoice] => NIL"
+        end
 
-          # Construir XML Facturae y asignar
+        puts "-----------------------------------"
+        puts "Extracción individual de campos clave:"
+        puts "  schema_version: #{params.dig(:invoice, :schema_version).inspect}"
+        puts "  modality: #{params.dig(:invoice, :modality).inspect}"
+        puts "  invoice_issuer_type: #{params.dig(:invoice, :invoice_issuer_type).inspect}"
+        puts "  issuer_corporate_name: #{params.dig(:invoice, :issuer_corporate_name).inspect}"
+        puts "  batch_identifier: #{params.dig(:invoice, :batch_identifier).inspect}"
+        puts "  seller_name: #{params.dig(:invoice, :seller_name).inspect}"
+        puts "  buyer_corporate_name: #{params.dig(:invoice, :buyer_corporate_name).inspect}"
+        puts "  issue_date: #{params.dig(:invoice, :issue_date).inspect}"
+        puts "  due_date: #{params.dig(:invoice, :due_date).inspect}"
+        puts "  currency: #{params.dig(:invoice, :currency).inspect}"
 
-          @invoice.xml = build_facturae_xml(@invoice, extra_data)
-
-          if @invoice.save
-            redirect_to root_path, notice: "Facturae creada con éxito"
-          else
-            flash.now[:alert] = "Error creando la factura: #{@invoice.errors.full_messages.join(', ')}"
-            render :new, status: :unprocessable_entity
+        puts "-----------------------------------"
+        puts "Invoice details:"
+        if params.dig(:invoice, :invoice_details_attributes).present?
+          params[:invoice][:invoice_details_attributes].each do |idx, detail|
+            puts "  Line #{idx}: #{detail.inspect}"
           end
+        else
+          puts "  No invoice_details_attributes"
+        end
+
+        puts "-----------------------------------"
+        puts "Desde strong params (invoice_params):"
+        begin
+          puts invoice_params.inspect
+        rescue => e
+          puts "  ERROR obteniendo invoice_params: #{e.message}"
+        end
+        puts "========== END DEBUG FACTURAE =========="
+
+        # === CLIENTE: BUSCAR O CREAR ===
+        buyer_name = params.dig(:invoice, :buyer_corporate_name)
+        if buyer_name.present?
+          client = Client.find_or_create_by(name: buyer_name) do |c|
+            c.tax_id = params.dig(:invoice, :buyer_tax_id_number)
+            c.address = params.dig(:invoice, :buyer_address)
+            c.zip_code = params.dig(:invoice, :buyer_post_code)
+            c.city = params.dig(:invoice, :buyer_town)
+            c.country_code = params.dig(:invoice, :buyer_country_code)
+            c.email = params.dig(:invoice, :buyer_email)
+            c.client_code = params.dig(:invoice, :buyer_client_code)
+            c.contact_person = params.dig(:invoice, :buyer_contact_person)
+            c.phone = params.dig(:invoice, :buyer_phone)
+          end
+        end
+
+        # === CREAR FACTURA ===
+        @invoice = current_user.invoices.build(invoice_params)
+        @invoice.from = params[:invoice][:from_address] if params[:invoice][:from_address].present?
+        @invoice.client = client if client
+        @invoice.status = "pending"
+        @invoice.format = "facturae"
+        @invoice.created_at = Time.current
+        @invoice.number = params[:invoice][:batch_identifier] if params[:invoice][:batch_identifier].present?
+
+        # === CALCULAR TOTALES ===
+        total = 0
+        if @invoice.invoice_details.present?
+          total = @invoice.invoice_details.sum do |detail|
+            detail.quantity.to_f * detail.unit_price.to_f * (1 + (detail.tax_rate.to_f / 100))
+          rescue
+            0
+          end
+        end
+        @invoice.total = total
+
+        # === PREPARAR XML ===
+        # @invoice.xml = build_facturae_xml(@invoice, extra_data)
+
+        # === GUARDAR FACTURA ===
+        if @invoice.save
+          redirect_to root_path, notice: "Facturae creada con éxito"
+        else
+          flash.now[:alert] = "Error creando la factura: #{@invoice.errors.full_messages.join(', ')}"
+          render :new, status: :unprocessable_entity
+        end
+
       elsif format_type == "facturx"
         # Lógica para generar factura Factur-X
 
@@ -165,6 +234,7 @@ def invoice_params
   params.require(:invoice).permit(
     :number,
     :issue_date,
+    :from,
     :due_date, 
     :currency,
     :payment_method,
@@ -185,6 +255,7 @@ def invoice_params
     :signature_base64,
     :user_id,
     :client_id,
+    :xml,
     invoice_details_attributes: [
       :product_code,
       :description,
