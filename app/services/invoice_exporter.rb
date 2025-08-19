@@ -7,4 +7,12 @@ class InvoiceExporter
     )
     WickedPdf.new.pdf_from_string(pdf_html)
   end
+  def self.to_facturae_pdf(invoice)
+    facturae_html = ApplicationController.render(
+    template: "invoices/pdf_templates/facturae",
+    layout: "pdf",
+    locals: { invoice: invoice }
+    )
+    WickedPdf.new.pdf_from_string(facturae_html)
+  end
 end

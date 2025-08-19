@@ -224,6 +224,12 @@
                 filename: "invoice_#{@invoice.id}.pdf",
                 type: "application/pdf",
                 disposition: "attachment" # descarga directa
+    elsif format == "facturae"
+        pdf_data = InvoiceExporter.to_facturae_pdf(@invoice)
+        send_data pdf_data,
+                  filename: "invoice_#{@invoice.id}.pdf",
+                  type: "application/pdf",
+                  disposition: "attachment" # descarga directa
     else
       redirect_to invoice_path(@invoice), alert: "Formato desconocido"
     end
