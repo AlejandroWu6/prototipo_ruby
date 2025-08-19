@@ -162,7 +162,8 @@
 
         # === CREAR FACTURA ===
         @invoice = current_user.invoices.build(invoice_params)
-        @invoice.from = params[:invoice][:from_address] if params[:invoice][:from_address].present?
+        @invoice.from = params[:invoice][:issuer_corporate_name] if params[:invoice][:issuer_corporate_name].present?
+        @invoice.from_address = params[:invoice][:issuer_address] if params[:invoice][:issuer_address].present?
         @invoice.client = client if client
         @invoice.status = "pending"
         @invoice.format = "facturae"
@@ -180,8 +181,14 @@
         end
         @invoice.total = total
 
+        @invoice.subtotal = total / (1 + (@invoice.invoice_details.first.tax_rate.to_f / 100)) if @invoice.invoice_details.any?
+        @invoice.tax_total = total - @invoice.subtotal if @invoice.invoice_details.any?
+        
         # === PREPARAR XML ===
-        # @invoice.xml = build_facturae_xml(@invoice, extra_data)
+        @invoice.xml = build_facturae_xml(@invoice, extra_data)
+        puts "XML generado: #{@invoice.xml.inspect}"
+        puts "segunda consulta"
+        puts @invoice.xml
 
         # === GUARDAR FACTURA ===
         if @invoice.save
@@ -270,91 +277,90 @@ end
 
 
 
+def build_facturae_xml(invoice, extra_data)
+  builder = Builder::XmlMarkup.new(indent: 2)
+  builder.instruct! :xml, encoding: "UTF-8"
 
-  def build_facturae_xml(invoice, extra_data)
-    builder = Builder::XmlMarkup.new(indent: 2)
-    builder.instruct! :xml, encoding: "UTF-8"
+  builder.Invoice do
+    builder.FileHeader do
+      builder.SchemaVersion extra_data["schema_version"] || "null"
+      builder.Modality extra_data["modality"] || "null"
+      builder.InvoiceIssuerType extra_data["invoice_issuer_type"] || "null"
+      builder.IssuerPersonTypeCode extra_data["issuer_person_type_code"] if extra_data["issuer_person_type_code"]
+      builder.IssuerResidenceTypeCode extra_data["issuer_residence_type_code"] if extra_data["issuer_residence_type_code"]
+      builder.IssuerTaxIdNumber extra_data["issuer_tax_id_number"] if extra_data["issuer_tax_id_number"]
+      builder.IssuerCorporateName extra_data["issuer_corporate_name"] if extra_data["issuer_corporate_name"]
+      builder.IssuerAddress extra_data["issuer_address"] if extra_data["issuer_address"]
+      builder.IssuerPostCode extra_data["issuer_post_code"] if extra_data["issuer_post_code"]
+      builder.IssuerTown extra_data["issuer_town"] if extra_data["issuer_town"]
+      builder.IssuerProvince extra_data["issuer_province"] if extra_data["issuer_province"]
+      builder.IssuerCountryCode extra_data["issuer_country_code"] if extra_data["issuer_country_code"]
 
-    builder.Invoice do
-      builder.FileHeader do
-        builder.SchemaVersion extra_data["schema_version"] || "3.2"
-        builder.Modality extra_data["modality"] || "I"
-        builder.InvoiceIssuerType extra_data["invoice_issuer_type"] || "EM"
-        builder.IssuerPersonTypeCode extra_data["issuer_person_type_code"] if extra_data["issuer_person_type_code"]
-        builder.IssuerResidenceTypeCode extra_data["issuer_residence_type_code"] if extra_data["issuer_residence_type_code"]
-        builder.IssuerTaxIdNumber extra_data["issuer_tax_id_number"] if extra_data["issuer_tax_id_number"]
-        builder.IssuerCorporateName extra_data["issuer_corporate_name"] if extra_data["issuer_corporate_name"]
-        builder.IssuerAddress extra_data["issuer_address"] if extra_data["issuer_address"]
-        builder.IssuerPostCode extra_data["issuer_post_code"] if extra_data["issuer_post_code"]
-        builder.IssuerTown extra_data["issuer_town"] if extra_data["issuer_town"]
-        builder.IssuerProvince extra_data["issuer_province"] if extra_data["issuer_province"]
-        builder.IssuerCountryCode extra_data["issuer_country_code"] if extra_data["issuer_country_code"]
-
-        builder.BatchIdentifier extra_data["batch_identifier"] if extra_data["batch_identifier"]
-        builder.InvoicesCount extra_data["invoices_count"] if extra_data["invoices_count"]
-        builder.TotalInvoicesAmount extra_data["total_invoices_amount"] if extra_data["total_invoices_amount"]
-      end
-
-      builder.InvoiceHeader do
-        builder.InvoiceNumber invoice.number
-        builder.InvoiceDate invoice.issue_date.strftime("%Y-%m-%d") if invoice.issue_date
-        builder.Currency invoice.currency || extra_data["currency"] || "EUR"
-      end
-
-      builder.Parties do
-        builder.SellerParty do
-          builder.PersonTypeCode extra_data["seller_person_type_code"] if extra_data["seller_person_type_code"]
-          builder.ResidenceTypeCode extra_data["seller_residence_type_code"] if extra_data["seller_residence_type_code"]
-          builder.TaxIdNumber extra_data["seller_tax_id_number"] if extra_data["seller_tax_id_number"]
-          builder.Name extra_data["seller_name"] || invoice.from || ""
-          builder.FirstSurname extra_data["seller_first_surname"] if extra_data["seller_first_surname"]
-          builder.Address extra_data["seller_address"] || invoice.from_address || ""
-          builder.PostCode extra_data["seller_post_code"] if extra_data["seller_post_code"]
-          builder.Town extra_data["seller_town"] if extra_data["seller_town"]
-          builder.Province extra_data["seller_province"] if extra_data["seller_province"]
-          builder.CountryCode extra_data["seller_country_code"] if extra_data["seller_country_code"]
-          builder.Email extra_data["seller_email"] if extra_data["seller_email"]
-        end
-
-        builder.BuyerParty do
-          builder.PersonTypeCode extra_data["buyer_person_type_code"] if extra_data["buyer_person_type_code"]
-          builder.ResidenceTypeCode extra_data["buyer_residence_type_code"] if extra_data["buyer_residence_type_code"]
-          builder.TaxIdNumber extra_data["buyer_tax_id_number"] if extra_data["buyer_tax_id_number"]
-          builder.CorporateName extra_data["buyer_corporate_name"] || invoice.client&.name || ""
-          builder.Address extra_data["buyer_address"] || invoice.bill_to_address || ""
-          builder.PostCode extra_data["buyer_post_code"] if extra_data["buyer_post_code"]
-          builder.Town extra_data["buyer_town"] if extra_data["buyer_town"]
-          builder.Province extra_data["buyer_province"] if extra_data["buyer_province"]
-          builder.CountryCode extra_data["buyer_country_code"] if extra_data["buyer_country_code"]
-        end
-      end
-
-      builder.InvoiceLines do
-        invoice.invoice_details.each_with_index do |detail, index|
-          builder.InvoiceLine do
-            builder.LineNumber index + 1
-            builder.ProductCode detail.product_code || ""
-            builder.Description detail.description || ""
-            builder.Quantity detail.quantity.to_i
-            builder.UnitPrice "%.2f" % detail.unit_price.to_f
-            builder.TaxRate "%.2f" % detail.tax_rate.to_f
-            line_amount = detail.quantity.to_i * detail.unit_price.to_f
-            builder.LineAmount "%.2f" % line_amount
-          end
-        end
-      end
-
-      builder.Totals do
-        builder.Subtotal "%.2f" % (invoice.subtotal || 0)
-        builder.TaxTotal "%.2f" % (invoice.tax_total || 0)
-        builder.Total "%.2f" % (invoice.total || 0)
-      end
-
-      builder.Terms extra_data["terms"] if extra_data["terms"]
+      builder.BatchIdentifier extra_data["batch_identifier"] if extra_data["batch_identifier"]
+      builder.InvoicesCount extra_data["invoices_count"] if extra_data["invoices_count"]
+      builder.TotalInvoicesAmount extra_data["total_invoices_amount"] if extra_data["total_invoices_amount"]
     end
 
-    builder.target!
+    builder.InvoiceHeader do
+      builder.InvoiceNumber invoice.number
+      builder.InvoiceDate invoice.issue_date.strftime("%Y-%m-%d") if invoice.issue_date
+      builder.Currency invoice.currency || extra_data["currency"] || "null"
+    end
+
+    builder.Parties do
+      builder.SellerParty do
+        builder.PersonTypeCode extra_data["seller_person_type_code"] if extra_data["seller_person_type_code"]
+        builder.ResidenceTypeCode extra_data["seller_residence_type_code"] if extra_data["seller_residence_type_code"]
+        builder.TaxIdNumber extra_data["seller_tax_id_number"] if extra_data["seller_tax_id_number"]
+        builder.Name extra_data["seller_name"] || invoice.from || "null"
+        builder.FirstSurname extra_data["seller_first_surname"] if extra_data["seller_first_surname"]
+        builder.Address extra_data["seller_address"] || invoice.from_address || "null"
+        builder.PostCode extra_data["seller_post_code"] if extra_data["seller_post_code"]
+        builder.Town extra_data["seller_town"] if extra_data["seller_town"]
+        builder.Province extra_data["seller_province"] if extra_data["seller_province"]
+        builder.CountryCode extra_data["seller_country_code"] if extra_data["seller_country_code"]
+        builder.Email extra_data["seller_email"] if extra_data["seller_email"]
+      end
+
+      builder.BuyerParty do
+        builder.PersonTypeCode extra_data["buyer_person_type_code"] if extra_data["buyer_person_type_code"]
+        builder.ResidenceTypeCode extra_data["buyer_residence_type_code"] if extra_data["buyer_residence_type_code"]
+        builder.TaxIdNumber extra_data["buyer_tax_id_number"] if extra_data["buyer_tax_id_number"]
+        builder.CorporateName extra_data["buyer_corporate_name"] || invoice.client&.name || "null"
+        builder.Address extra_data["buyer_address"] || invoice.bill_to_address || "null"
+        builder.PostCode extra_data["buyer_post_code"] if extra_data["buyer_post_code"]
+        builder.Town extra_data["buyer_town"] if extra_data["buyer_town"]
+        builder.Province extra_data["buyer_province"] if extra_data["buyer_province"]
+        builder.CountryCode extra_data["buyer_country_code"] if extra_data["buyer_country_code"]
+      end
+    end
+
+    builder.InvoiceLines do
+      invoice.invoice_details.each_with_index do |detail, index|
+        builder.InvoiceLine do
+          builder.LineNumber index + 1
+          builder.ProductCode detail.product_code || "null"
+          builder.Description detail.description || "null"
+          builder.Quantity detail.quantity.to_i
+          builder.UnitPrice "%.2f" % detail.unit_price.to_f
+          builder.TaxRate "%.2f" % detail.tax_rate.to_f
+          line_amount = detail.quantity.to_i * detail.unit_price.to_f
+          builder.LineAmount "%.2f" % line_amount
+        end
+      end
+    end
+
+    builder.Totals do
+      builder.Subtotal "%.2f" % (invoice.subtotal || 0)
+      builder.TaxTotal "%.2f" % (invoice.tax_total || 0)
+      builder.Total "%.2f" % (invoice.total || 0)
+    end
+
+    builder.Terms extra_data["terms"] if extra_data["terms"]
   end
+
+  builder.target!
+end
 
 
     def require_login
